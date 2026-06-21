@@ -1,32 +1,217 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>琉球ゴールデンキングス 2026-27 カレンダー</title>
+
+<style>
+
+body{
+    font-family:-apple-system,BlinkMacSystemFont,sans-serif;
+    background:#f5f7fa;
+    max-width:1000px;
+    margin:auto;
+    padding:20px;
+}
+
+header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+.btn{
+    display:inline-block;
+    padding:12px 18px;
+    margin:5px;
+    border-radius:8px;
+    text-decoration:none;
+    color:white;
+    font-weight:bold;
+}
+
+.google{
+    background:#4285F4;
+}
+
+.apple{
+    background:#333333;
+}
+
+.download{
+    background:#16a34a;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#222;
+    color:white;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:10px;
+    text-align:left;
+}
+
+tbody tr:nth-child(even){
+    background:#f9f9f9;
+}
+
+.error{
+    color:red;
+    font-weight:bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🏀 琉球ゴールデンキングス 2026-27</h1>
+    <p>Googleカレンダー・Appleカレンダー対応</p>
+</header>
+
+<div class="card">
+
+<h2>カレンダー登録</h2>
+
+<a
+class="btn google"
+href="https://calendar.google.com/calendar/u/0/r?cid=webcal://uy819.github.io/yu810-bleague-calendar/kings.ics"
+target="_blank">
+📅 Googleカレンダーに追加
+</a>
+
+<a
+class="btn apple"
+href="webcal://uy819.github.io/yu810-bleague-calendar/kings.ics">
+🍎 Appleカレンダーに追加
+</a>
+
+<a
+class="btn download"
+href="kings.ics">
+📥 ICSダウンロード
+</a>
+
+</div>
+
+<div class="card">
+
+<h2>利用方法</h2>
+
+<ol>
+<li>Googleカレンダーに追加をクリック</li>
+<li>カレンダーを登録</li>
+<li>今後の日程変更は自動反映</li>
+</ol>
+
+</div>
+
+<div class="card">
+
+<h2>試合日程</h2>
+
+<table id="schedule">
+
+<thead>
+<tr>
+<th>日付</th>
+<th>HOME</th>
+<th>AWAY</th>
+<th>会場</th>
+</tr>
+</thead>
+
+<tbody id="schedule-body">
+</tbody>
+
+</table>
+
+<p id="error" class="error"></p>
+
+</div>
+
+<footer style="text-align:center;color:gray;margin-top:30px;">
+Powered by GitHub Pages<br>
+Data Source: B.LEAGUE
+</footer>
+
 <script>
-window.onload = function() {
 
-  const tbody = document.querySelector('#schedule tbody');
+window.addEventListener('load', function() {
 
-  fetch('kings_schedule.csv')
-    .then(response => response.text())
+    const tbody = document.getElementById('schedule-body');
+    const error = document.getElementById('error');
+
+    fetch('kings_schedule.csv')
+
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error(
+                'CSV取得失敗: ' + response.status
+            );
+        }
+
+        return response.text();
+    })
+
     .then(text => {
 
-      const rows = text.trim().split('\n');
+        const rows = text.trim().split(/\r?\n/);
 
-      rows.slice(1).forEach(row => {
+        rows.slice(1).forEach(row => {
 
-        const cols = row.split(',');
+            const cols = row.split(',');
 
-        const tr = document.createElement('tr');
+            if(cols.length < 5){
+                return;
+            }
 
-        tr.innerHTML = `
-          <td>${cols[0]}</td>
-          <td>${cols[2]}</td>
-          <td>${cols[3]}</td>
-          <td>${cols[4]}</td>
-        `;
+            const tr = document.createElement('tr');
 
-        tbody.appendChild(tr);
+            tr.innerHTML = `
+                <td>${cols[0]}</td>
+                <td>${cols[2]}</td>
+                <td>${cols[3]}</td>
+                <td>${cols[4]}</td>
+            `;
 
-      });
+            tbody.appendChild(tr);
+
+        });
+
+    })
+
+    .catch(err => {
+
+        console.error(err);
+
+        error.textContent =
+            '試合日程の読込に失敗しました: '
+            + err.message;
 
     });
 
-}
+});
+
 </script>
+
+</body>
+</html>
