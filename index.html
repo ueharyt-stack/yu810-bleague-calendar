@@ -1,29 +1,28 @@
 <script>
-
 fetch('kings_schedule.csv')
-.then(response => response.text())
-.then(text => {
+  .then(response => response.text())
+  .then(text => {
+    console.log(text);
 
     const rows = text.trim().split('\n');
-
     const tbody = document.querySelector('#schedule tbody');
 
     rows.slice(1).forEach(row => {
+      const cols = row.split(',');
 
-        const cols = row.split(',');
+      const tr = document.createElement('tr');
 
-        const tr = document.createElement('tr');
+      tr.innerHTML =
+        '<td>' + cols[0] + '</td>' +
+        '<td>' + cols[2] + '</td>' +
+        '<td>' + cols[3] + '</td>' +
+        '<td>' + cols[4] + '</td>';
 
-        tr.innerHTML = `
-            <td>${cols[0]}</td>
-            <td>${cols[2]}</td>
-            <td>${cols[3]}</td>
-            <td>${cols[4]}</td>
-        `;
-
-        tbody.appendChild(tr);
+      tbody.appendChild(tr);
     });
-
-});
-
+  })
+  .catch(error => {
+    console.error(error);
+    document.body.innerHTML += '<p>CSV読込エラー: ' + error + '</p>';
+  });
 </script>
