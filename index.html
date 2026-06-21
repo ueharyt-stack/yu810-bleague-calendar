@@ -142,7 +142,32 @@ Data Source: B.LEAGUE
 
 <script>
 
-fetch('kings_schedule.csv')
+fetch('https://www.bleague.jp/files/user/_/opening2026-27/js/schedule-premier.json')
+.then(response => response.json())
+.then(data => {
+
+    const tbody = document.querySelector('#schedule tbody');
+
+    data.forEach(game => {
+
+        if (
+            game.home.includes('琉球') ||
+            game.away.includes('琉球')
+        ) {
+
+            const tr = document.createElement('tr');
+
+            tr.innerHTML = `
+                <td>${game.date}</td>
+                <td>${game.home}</td>
+                <td>${game.away}</td>
+                <td>${game.venue}</td>
+            `;
+
+            tbody.appendChild(tr);
+        }
+    });
+});
 .then(response => response.text())
 .then(text => {
 
