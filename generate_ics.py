@@ -12,18 +12,30 @@ kings = df[
     (df["away"].str.contains("琉球"))
 ]
 
+# CSV生成
+kings[
+    [
+        "date",
+        "dayOfWeek",
+        "home",
+        "away",
+        "venue"
+    ]
+].to_csv(
+    "kings_schedule.csv",
+    index=False,
+    encoding="utf-8-sig"
+)
+
+# ICS生成
 calendar = Calendar()
 
 for _, row in kings.iterrows():
 
     e = Event()
-
     e.name = f"{row['home']} vs {row['away']}"
-
     e.begin = row["date"]
-
     e.make_all_day()
-
     e.location = row["venue"]
 
     calendar.events.add(e)
@@ -31,4 +43,4 @@ for _, row in kings.iterrows():
 with open("kings.ics", "w", encoding="utf-8") as f:
     f.writelines(calendar)
 
-print("ICS生成完了")
+print(f"{len(kings)}試合生成")
