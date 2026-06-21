@@ -31,6 +31,7 @@ jobs:
           git config user.email github-actions@github.com
 
           git add kings.ics
+          git add kings_schedule.csv
 
           git diff --cached --quiet || git commit -m "update calendar"
 
